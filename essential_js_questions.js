@@ -87,7 +87,9 @@ myObject.func();
 
 //ANSWER
 /**
- * With the Use Strict, the javascript engine will run the javascript in stric mode, enforcrias a stricer parins and error hanslding, for example using a variable without declaring it. The use of strict mode also benefits code optimation. Sometimes the same code runs faster with the stric mode is on.
+ * With the Use Strict, the javascript engine will run the javascript in stric mode,
+ *  Enforces a strict parcins and error handling,
+ * for example using a variable without declaring it. The use of strict mode also benefits code optimation. Sometimes the same code runs faster with the stric mode is on.
  *  - Makes debugging easier.
  *  - Prevents accidental globals. wihtout SM, var wihtout declartaion are declared globally with that name.
  *  - Eliminates this coercion: this.null or this.undefined throws an error.
@@ -686,7 +688,39 @@ console.log(
  * Therefore, in this example, since x is not defined in the inner
  * function, the scope of the outer function is searched for a defined
  * variable x, which is found to have a value of 1.
+ *
+ * A code is a scope (outerScope)
+ * each function is another scode (innerScope)
+ *  Each inner scope has access to outer acope varialbes.
+ *
  */
+
+/** OUTER SCOPE **/
+
+let myName = 'John';
+
+/** INNER SCOPE **/
+function printName() {
+  console.log(myName); //Print the current value if nyNam
+}
+/** END OF INNER SCOPE **/
+
+myName = 'JD';
+printName(); //John
+myName = 'Ana';
+printName(); //Print Ana
+
+/** END OUTER SCOPE **/
+
+function outer(outerVar) {
+  return function inner(innerVar) {
+    console.log('outer variable', outerVar);
+    console.log('inner variable', innerVar);
+  };
+}
+
+const newFunction = outer('outSideArg');
+newFunction('newVar');
 
 /***************************************************************
 25) What will the following code output to the console and why:
@@ -770,6 +804,7 @@ var obj = {
   // <| obj.method Accepts just 1 parameter
   method: function (fn) {
     fn(); //executes the global fn with length = 10
+
     // Hence arguments[0]() is nothing but calling fn().
     // Inside fn now, the scope of this function becomes
     // the arguments array, and logging the length of arguments[]
@@ -931,3 +966,107 @@ outer();
  * from local to global until an instance is found. Since the inner
  * closure has a b variable of its own, that is what will be output.
  */
+
+/**
+  * Memoization in a Nutshell
+Memoization is the programmatic practice of making long recursive/iterative functions run much faster.
+How, you ask? By caching the values that the function returns after its initial execution.
+When we input the same value into our memoized function, it returns the value stored in the cache 
+instead of running the function again, thus boosting performance. No longer does your program have to
+recalculate every number to get a result.
+Sounds aw
+  */
+
+/**
+   * This is a demo task.
+
+Write a function:
+
+function solution(A);
+
+that, given an array A of N integers, returns the smallest positive integer (greater than 0) that does not occur in A.
+
+For example, given A = [1, 3, 6, 4, 1, 2], the function should return 5.
+
+Given A = [1, 2, 3], the function should return 4.
+
+Given A = [−1, −3], the function should return 1.
+
+Write an efficient algorithm for the following assumptions:
+
+N is an integer within the range [1..100,000];
+
+each element of array A is an integer within the range [−1,000,000..1,000,000].
+
+Copyright 2009–2020 by Codility Limited. All Rights Reserved. Unauthorized copying, publication or disclosure prohibited.
+   */
+
+/**
+ * REACT TRUELOGIC QUESTION
+ * The component should display as hex number the amount of times it has been rendered by the focus/blur events
+ * in intervals of 500 milliseconds.
+ *
+ * >>> if foculs/blurs ocurrs more than 1 in the interval, count just one.
+ *
+ * 1. fix component to be fully compatible with react-native while preserving functionality
+ *
+ *  SET TIMEOUT AND DEBOUNCE
+ *  They are very different and used in completely different cases.
+ *
+ *  _.debounce returns a function, setTimeout returns an id which you can use to cancel the timeOut.
+ *  No matter how many times you call the function which is returned by _.debounce, it will run only once in the given time frame.
+ *
+ *  setTimeout and debounce are in no way the same thing. setTimeout simply waits n milliseconds and the invokes
+ *  the supplied function. debounce on the other hand returns a function that only calls the callback after n milliseconds
+ *  after the last time the functions was called.
+ *
+ *  @ref https://medium.com/better-programming/how-to-use-debounce-and-throttle-in-javascript-da95dc151f7b
+ */
+
+import React, { useEffect, useCallback, useState } from 'react';
+import _debounce from 'lodash/debounce';
+
+const App = ({ props }) => {
+  const [renders, setRenders] = useState(0);
+
+  const avoidMultipleRenders = useCallback(
+    _debounce(() => {
+      setRenders((renders) => renders + 1);
+    }, 2000)
+  );
+
+  useEffect(() => {
+    window.addEventListener('focus', (e) => {
+      avoidMultipleRenders();
+    });
+    window.addEventListener('blur', (e) => {
+      avoidMultipleRenders();
+    });
+  }, []);
+
+  return (
+    <div style={{ width: '50px', height: '100%' }}>
+      <p>{renders}</p>
+    </div>
+  );
+};
+
+export default App;
+
+/*
+   The component should display as hex number the amount of times it has been rendered by the focus/blur events
+   in intervals of 500 milliseconds. 
+
+   
+   1. fix component to be fully compatible with react-native while preserving functionality
+   */
+
+// Debouce
+
+const debounce = (delay, fn) => {
+  let inDebounce = null;
+  return (args) => {
+    clearTimeout(inDebounce);
+    inDebounce = setTimeout(() => fn(args), delay);
+  };
+};
